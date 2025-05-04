@@ -89,7 +89,10 @@
         </header>
 
         <div class="app-controls d-flex justify-content-between mb-4">
-            <button id="show-onboarding" class="btn btn-sm btn-link"><i class="fas fa-info-circle"></i> How It Works</button>
+            <div>
+                <button id="show-onboarding" class="btn btn-sm btn-link"><i class="fas fa-info-circle"></i> How It Works</button>
+                <button id="show-rate-limit-info" class="btn btn-sm btn-link ms-2"><i class="fas fa-clock"></i> Usage Limits</button>
+            </div>
             <div class="theme-toggle d-flex align-items-center">
                 <label class="switch me-2">
                     <input type="checkbox" id="theme-switch">
@@ -372,9 +375,14 @@
                             <button id="back-to-step1" class="btn btn-outline-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to Details
                             </button>
-                            <button id="generate-btn" class="btn btn-primary">
-                                <i class="fas fa-magic"></i> Generate Report
-                            </button>
+                            <div class="d-flex align-items-center">
+                                <button id="generate-btn" class="btn btn-primary">
+                                    <i class="fas fa-magic"></i> Generate Report
+                                </button>
+                                <span id="rate-limit-indicator" class="ms-2 text-muted" style="display: none;">
+                                    <i class="fas fa-clock"></i> <span id="rate-limit-time"></span>
+                                </span>
+                            </div>
                         </div>
                     </section>
                     
@@ -431,5 +439,27 @@
         // Update API endpoint for production
         const API_BASE_URL = 'https://reportly-lang-chain-git-main-rudramistry001s-projects.vercel.app';
     </script>
+
+    <!-- Rate Limit Modal -->
+    <div class="modal fade" id="rate-limit-modal" tabindex="-1" aria-labelledby="rate-limit-modal-label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rate-limit-modal-label">Usage Limit Information</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>To ensure fair usage of our AI resources and maintain service quality for all users, we've implemented the following usage limits:</p>
+                    <ul>
+                        <li><strong>Report Generation:</strong> One report every 10 minutes</li>
+                    </ul>
+                    <p>This free version of REPORTLY uses a shared API key with limited quota. Thank you for your understanding!</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html> 

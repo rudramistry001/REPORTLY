@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const onboardingOverlay = document.getElementById('onboarding-overlay');
     const loadingOverlay = document.getElementById('loading-overlay');
     const showOnboardingBtn = document.getElementById('show-onboarding');
+    const showRateLimitInfoBtn = document.getElementById('show-rate-limit-info');
+    const rateLimitModal = new bootstrap.Modal(document.getElementById('rate-limit-modal'));
     const startAppBtn = document.getElementById('start-app');
     const prevStepBtn = document.getElementById('prev-step');
     const nextStepBtn = document.getElementById('next-step');
@@ -23,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const contentLength = document.getElementById('content-length');
     const previewContent = document.getElementById('preview-content');
     const previewPlaceholder = document.querySelector('.preview-placeholder');
+    const rateLimitIndicator = document.getElementById('rate-limit-indicator');
+    const rateLimitTime = document.getElementById('rate-limit-time');
 
     // Styling elements
     const fontFamily = document.getElementById('font-family');
@@ -77,6 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadBtn.addEventListener('click', downloadReport);
     downloadPdfBtn.addEventListener('click', downloadPDF);
     showOnboardingBtn.addEventListener('click', () => showOnboarding(true));
+    showRateLimitInfoBtn.addEventListener('click', () => rateLimitModal.show());
     startAppBtn.addEventListener('click', () => showOnboarding(false));
     prevStepBtn.addEventListener('click', goToPrevStep);
     nextStepBtn.addEventListener('click', goToNextStep);
@@ -149,6 +154,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize style preview
     updateStylePreview();
+
+    // Check rate limit on page load
+    checkRateLimit();
+    
+    // Start timer to update rate limit indicator
+    setInterval(checkRateLimit, 30000); // Check every 30 seconds
 
     // Onboarding Functions
     function showOnboarding(show) {
@@ -791,6 +802,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to fetch AI-generated content from the server
     async function fetchAIContent(requestData) {
         try {
+            // Check if user is rate limited
+            const lastRequestTime = localStorage.getItem('lastReportGenTime');
+            const currentTime = Date.now();
+            const tenMinutesInMs = 10 * 60 * 1000;
+            
+            if (lastRequestTime && (currentTime - parseInt(lastRequestTime)) < tenMinutesInMs) {
+                const timeLeft = Math.ceil((parseInt(lastRequestTime) + tenMinutesInMs - currentTime) / 60000);
+                alert(`Rate limit reached. Please wait ${timeLeft} minute(s) before generating another report.`);
+                return null;
+            }
+            
             console.log('Sending API request with data:', requestData);
             
             // Ensure we have the required fields and they're not empty
@@ -828,6 +850,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 data = await response.json();
                 console.log('API response from primary endpoint:', data);
+                
+                // Save the current time as the last request time
+                localStorage.setItem('lastReportGenTime', currentTime.toString());
             } catch (primaryError) {
                 console.warn('Primary endpoint failed, trying fallback endpoint:', primaryError);
                 
@@ -849,6 +874,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     data = await response.json();
                     console.log('API response from fallback endpoint:', data);
+                    
+                    // Save the current time as the last request time
+                    localStorage.setItem('lastReportGenTime', currentTime.toString());
                 } catch (fallbackError) {
                     console.error('Both endpoints failed:', fallbackError);
                     throw fallbackError; // Re-throw to be caught by outer try-catch
@@ -1092,5 +1120,31 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Generate PDF
         html2pdf().set(options).from(element).save();
+    }
+
+    // Rate limit functions
+    function checkRateLimit() {
+        const lastRequestTime = localStorage.getItem('lastReportGenTime');
+        if (lastRequestTime) {
+            const currentTime = Date.now();
+            const tenMinutesInMs = 10 * 60 * 1000;
+            const timeDiff = parseInt(lastRequestTime) + tenMinutesInMs - currentTime;
+            
+            if (timeDiff > 0) {
+                // Still rate limited
+                const minutesLeft = Math.ceil(timeDiff / 60000);
+                rateLimitTime.textContent = `Available in ${minutesLeft} minute(s)`;
+                rateLimitIndicator.style.display = 'inline';
+                generateBtn.disabled = true;
+            } else {
+                // Rate limit expired
+                rateLimitIndicator.style.display = 'none';
+                generateBtn.disabled = false;
+            }
+        } else {
+            // No previous request, not rate limited
+            rateLimitIndicator.style.display = 'none';
+            generateBtn.disabled = false;
+        }
     }
 }); 
