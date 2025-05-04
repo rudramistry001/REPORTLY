@@ -1,0 +1,7 @@
+
+It is a CRM created using Node.js It uses Provider for state management in Flutter and Express and MongoDB in backend
+
+
+ITS MAIN PURPOSE IS TO SOLVE THE BILLING OF JEWEL RETAILERS BY PROVIDING MANY AUTOMATIONS ANG GIVING ADVANCE ANALYTICS TO THE JEWELLERS ACCORDING TO THEIR SALE.
+
+It is a CRM created using Node.js It uses Provider for state management in Flutter and Express and MongoDB in backend
