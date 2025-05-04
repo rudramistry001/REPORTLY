@@ -86,8 +86,16 @@ The frontend is configured to communicate with the backend at `http://localhost:
 1. Verify the server is running on port 8000 (check the console output when starting the server)
 2. Ensure you're using the correct endpoint path `/generate-details` 
 3. If you need to change the port or endpoint:
-   - Update the `API_URL` variable in `script.js` to match your server configuration
+4. 
+ - Update the `API_URL` variable in `script.js` to match your server configuration
    - Example: `const API_URL = 'http://localhost:YOUR_PORT/YOUR_ENDPOINT';`
+
+
+![image](https://github.com/user-attachments/assets/7282cbf6-0734-48f6-a8b1-d5a0216fbc11)
+![image](https://github.com/user-attachments/assets/f11d1952-8842-484c-9d23-b41847d3e3fa)
+![image](https://github.com/user-attachments/assets/6fc014e9-4af1-415c-b39e-307e60535f6b)
+![image](https://github.com/user-attachments/assets/395ad373-ae0b-44c3-ae0f-c24efaf36f79)
+
 
 ## License
 
