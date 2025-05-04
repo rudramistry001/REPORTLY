@@ -50,8 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const addSectionBackground = document.getElementById('add-section-background');
 
     // Define API URLs
-    const API_URL = 'http://localhost:8000/generate-details';
-    const FALLBACK_API_URL = 'http://localhost:8000/manual-generate';
+    const API_URL = typeof API_BASE_URL !== 'undefined' ? 
+        `${API_BASE_URL}/generate-details` : 
+        'http://localhost:8000/generate-details';
+    const FALLBACK_API_URL = typeof API_BASE_URL !== 'undefined' ? 
+        `${API_BASE_URL}/manual-generate` : 
+        'http://localhost:8000/manual-generate';
 
     // Initialize color pickers
     if (typeof $.fn.spectrum !== 'undefined') {
